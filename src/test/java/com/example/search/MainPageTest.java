@@ -9,8 +9,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainPageTest {
     private WebDriver driver;
@@ -43,5 +48,22 @@ public class MainPageTest {
 
         WebElement searchPageField = driver.findElement(By.cssSelector(searchElement));
         assertEquals(searchValue, searchPageField.getAttribute("value"));
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.and(
+                ExpectedConditions.attributeContains(By.cssSelector("h2 > a[href]"), "href", "selenium"),
+                ExpectedConditions.elementToBeClickable(By.cssSelector("h2 > a[href]"))
+        ));
+        List<WebElement> results = driver.findElements(By.cssSelector("h2 > a[href]"));
+        clickElement(results, 0);
+        ArrayList<String> tabs = new ArrayList<> (driver.getWindowHandles());
+        driver.switchTo().window(tabs.get(1));
+        assertEquals("https://www.selenium.dev/", driver.getCurrentUrl(), "Открылась неверная сслыка");
+    }
+
+    public void clickElement(List<WebElement> results, int num){
+        int linkNum = num + 1;
+        results.get(num).click();
+        System.out.println("Осуществлен переход по сслыке № " + linkNum);
     }
 }
