@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainPageTest {
@@ -55,7 +56,9 @@ public class MainPageTest {
         ));
         List<WebElement> results = driver.findElements(By.cssSelector("h2 > a[href]"));
         clickElement(results, 0);
-        assertEquals("https://www.selenium.dev/", results.get(0).getAttribute("href"));
+        ArrayList<String> tabs = new ArrayList<> (driver.getWindowHandles());
+        driver.switchTo().window(tabs.get(1));
+        assertEquals("https://www.selenium.dev/", driver.getCurrentUrl());
     }
 
     public void clickElement(List<WebElement> results, int num){
