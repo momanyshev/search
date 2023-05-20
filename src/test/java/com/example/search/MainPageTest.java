@@ -10,7 +10,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -59,6 +58,18 @@ public class MainPageTest {
         ArrayList<String> tabs = new ArrayList<> (driver.getWindowHandles());
         driver.switchTo().window(tabs.get(1));
         assertEquals("https://www.selenium.dev/", driver.getCurrentUrl(), "Открылась неверная сслыка");
+    }
+
+    @Test
+    public void search1() {
+        String input = "Selenium";
+
+        WebElement searchField = driver.findElement(By.cssSelector("#sb_form_q"));
+        searchField.sendKeys(input);
+        searchField.submit();
+
+        WebElement searchPageField = driver.findElement(By.cssSelector("#sb_form_q"));
+        assertEquals(input, searchPageField.getAttribute("value"));
     }
 
     public void clickElement(List<WebElement> results, int num){
