@@ -1,5 +1,7 @@
-package com.example.search;
+package com.example.search.tests;
 
+import com.example.search.pages.MainPage;
+import com.example.search.pages.ResultsPage;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +18,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainPageTest {
+public class BingSearchTest {
     private WebDriver driver;
 
     @BeforeEach
@@ -36,45 +38,36 @@ public class MainPageTest {
     }
 
     @Test
-    public void search() {
+    public void searchResultsTest() {
+        String input = "Selenium";
 
-        String searchElement = "#sb_form_q";
-        String searchValue = "Selenium";
+        MainPage mp = new MainPage(driver);
+        mp.sendText(input);
 
-        WebElement searchField = driver.findElement(By.cssSelector(searchElement));
-        searchField.sendKeys(searchValue);
-        searchField.submit();
-
-        WebElement searchPageField = driver.findElement(By.cssSelector(searchElement));
-        assertEquals(searchValue, searchPageField.getAttribute("value"));
+        ResultsPage rp = new ResultsPage(driver);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         wait.until(ExpectedConditions.and(
                 ExpectedConditions.attributeContains(By.cssSelector("h2 > a[href]"), "href", "selenium"),
                 ExpectedConditions.elementToBeClickable(By.cssSelector("h2 > a[href]"))
         ));
-        List<WebElement> results = driver.findElements(By.cssSelector("h2 > a[href]"));
-        clickElement(results, 0);
+        rp.clickElement(0);
         ArrayList<String> tabs = new ArrayList<> (driver.getWindowHandles());
         driver.switchTo().window(tabs.get(1));
         assertEquals("https://www.selenium.dev/", driver.getCurrentUrl(), "Открылась неверная сслыка");
     }
 
     @Test
-    public void search1() {
+    public void searchFieldTest() {
         String input = "Selenium";
 
-        WebElement searchField = driver.findElement(By.cssSelector("#sb_form_q"));
-        searchField.sendKeys(input);
-        searchField.submit();
+        MainPage mp = new MainPage(driver);
+        mp.sendText(input);
 
-        WebElement searchPageField = driver.findElement(By.cssSelector("#sb_form_q"));
-        assertEquals(input, searchPageField.getAttribute("value"));
+        ResultsPage rp = new ResultsPage(driver);
+
+        assertEquals(input, rp.getTextFromSearchField(), "Текст не совпал");
     }
 
-    public void clickElement(List<WebElement> results, int num){
-        int linkNum = num + 1;
-        results.get(num).click();
-        System.out.println("Осуществлен переход по сслыке № " + linkNum);
-    }
+
 }
